@@ -1,6 +1,6 @@
 interface:
   display_name: "优质企业财务质量评估"
-  short_description: "按V4.1评估A股财务质量并生成可视化HTML报告"
+  short_description: "按V4.2资本回报优先规则评估A股财务质量并生成可视化HTML报告"
   default_prompt: "Use $a-share-financial-quality to evaluate an A-share non-financial company and generate a visual HTML report."
 policy:
   allow_implicit_invocation: true

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Deterministic V4.1 financial-quality scorer."""
+"""Deterministic V4.2 financial-quality scorer."""
 import argparse, json, sys
 from pathlib import Path
 ANCHORS={"roic":([0,4,8,12,16,20],[0,20,40,60,80,100]),"growth":([-15,0,5,10,15,25],[0,20,40,60,80,100]),"ccr":([0,.4,.6,.8,1,1.2],[0,20,40,60,80,100]),"fcf_ic":([-5,0,3,6,10,15],[0,20,40,60,80,100]),"debt_ebitda":([6,4,3,2,1,0],[0,20,40,60,80,100])}
-METRIC_WEIGHTS={"roic":.40,"growth":.15,"ccr":.25,"fcf_ic":.10,"debt_ebitda":.10}
+METRIC_WEIGHTS={"roic":.70,"growth":.10,"ccr":.10,"fcf_ic":.05,"debt_ebitda":.05}
 TIME_WEIGHTS=[.20,.30,.50]
 def interpolate(value,xs,scores):
     descending=xs[0]>xs[-1]
@@ -40,7 +40,7 @@ def score(payload):
     if len(payload.get("periods",[]))!=3:raise ValueError("periods must contain exactly 3 periods in 20/30/50 order")
     periods=[score_period(p) for p in payload["periods"]]
     final=None if any(p["period_score"] is None for p in periods) else round(sum(p["period_score"]*w for p,w in zip(periods,TIME_WEIGHTS)),2)
-    return {"model":"优质企业财务质量评估模型 V4.1","company":payload.get("company",{}),"periods":periods,"time_weights":TIME_WEIGHTS,"final_score":final,"result":grade(final),"status":"ok" if final is not None else "数据不足"}
+    return {"model":"优质企业财务质量评估模型 V4.2","company":payload.get("company",{}),"periods":periods,"time_weights":TIME_WEIGHTS,"final_score":final,"result":grade(final),"status":"ok" if final is not None else "数据不足"}
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--input",type=Path);args=parser.parse_args()
     payload=json.loads(args.input.read_text(encoding="utf-8") if args.input else sys.stdin.read())
